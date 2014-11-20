@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Diseño Web:Localizacion</title>
+	<link rel="stylesheet" type="text/css" href="css/normalize.css">
+	<link rel="stylesheet" href="css/estilos.css">
+	<script type="text/javascript" src="js/prefixfree.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript">
+        var map;
+        var latitud;
+        var longitud;
+        var precision;        
+        $(document).ready(function() {
+            localizame();            
+        });
+        
+        function localizame() {
+            $(document).ready(function(){
+      if ((localStorage.usuario !=undefined) && 
+        (localStorage.contrasena !=undefined)){
+        $("#datosa").text("Salir:" + localStorage.usuario);
+                           }else{
+                            document.location.href="login.html"
+                           }
+    });     
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(coordenadas, errores);
+            }else{
+                alert('Oops! Tu navegador no soporta geolocalización. Bájate Chrome, que es gratis!');
+            }
+        }
+        
+        function coordenadas(position) {
+            latitud = position.coords.latitude;
+            longitud = position.coords.longitude;
+            precision = position.coords.accuracy;  
+            cargarMapa();
+            alert("Datos con una precisión de " + precision/1000 + " km, " + precision + " metros");
+        }
+        
+        function errores(err) {
+            if (err.code == 0) {
+              alert("Oops! Algo ha salido mal");
+            }
+            if (err.code == 1) {
+              alert("Oops! No has aceptado compartir tu posición");
+            }
+            if (err.code == 2) {
+              alert("Oops! No se puede obtener la posición actual");
+            }
+            if (err.code == 3) {
+              alert("Oops! Hemos superado el tiempo de espera");
+            }
+        }
+         
+        function cargarMapa() {
+            var latlon = new google.maps.LatLng(latitud,longitud);
+            var myOptions = {
+                zoom: 17,
+                center: latlon,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map($("#map_canvas").get(0), myOptions);
+            
+            var coorMarcador = new google.maps.LatLng(latitud,longitud);
+                
+            var marcador = new google.maps.Marker({
+                position: coorMarcador,
+                map: map,
+                title: "Dónde estoy?"
+            });           
+        }
+    </script>       
+</head>
+<body>
+	<div class ="wrapper">
+		<section class="navsup">
+				<section class ="redes">
+					<a href="https://www.facebook.com/atiliojosue.alvarezcarias" target="_blank"><img src="img/ico_facebook_naranja.png" img border="0" /></a>
+					<a href="https://twitter.com/94ajac" target="_blank"><img src="img/ico_twitter_naranja.png" img border="0" /></a>
+					<div class="datos">
+				  		<a id="datosa" onclick="borrarDatos()"></a>
+					</div>
+				</section>
+		</section>	
+		<header>
+			<br>
+			<br>			
+			<h1>Diseño Web</h1>
+			<nav class="nav">
+				<ul>
+					<li><a  href="Index.html" class="ae">Inicio</a></li>
+					<li><a  href="frontend.html">Front-End</a></li>
+					<li><a  href="backend.html">Back-End</a></li>
+					<li><a  href="localizacion.html" class="active">Localizate</a></li>
+				</ul>
+		    </nav>		   
+		</header>
+		<div class ="contenido">
+			<section  id = "cont1">
+				 <article class ="informacion">
+			         <h2>Aqui puedes ver tuy ubicación</h2>
+			         <div id='map_canvas' style='width:100%; height:400px;'></div>			    
+    			</article>    
+   			</section>
+			 <footer class	 = "footer">
+				<span>AJAC © 2014 Todos los derechos reservados</span>
+			</footer>
+		</div>
+	</div>
+</body>
+</html>
